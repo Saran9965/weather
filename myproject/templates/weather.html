@@ -1,5 +1,11 @@
 {% extends "index.html" %}
 {% block content %}
+<style>
+    .shadow{
+        box-shadow: 2px 2px 3px 1px lightgray;
+        padding: 20px;
+    }
+</style>
 <div class="container-fluid" style="margin-top:50px;margin-bottom: 100px;"> 
     <div class="col-md-offset-4 col-md-3">
         <h3 class="page-header text-primary text-center"><span class="fas fa-cloud-sun"></span>Weather Application</h3>
@@ -7,7 +13,7 @@
         {% for message in messages %}
         {% if messages.tags == 'error'%}
             <div class="alert alert-danger">
-                {{message}}
+                {{ message }}
             </div>
             {% else %}
             <div class="alert alert-{{message.tags}}">
@@ -25,6 +31,24 @@
                 </span>
             </div>
         </form>
+        {% for city_weather in data %}
+        <div class="shadow media">
+            <div class="media-left">
+                <a href="#">
+                    <img src="https://openweathermap.org/img/w/{{city_weather.icon}}.png"class='media-object'alt='image'>
+                </a>
+            </div>
+            <div class="media-body">
+                <h3 class="media-heading"><b>{{city_weather.city}}</b></h3>
+                <h4>{{city_weather.temperature}}</h4>
+                <h4>{{city_weather.description}}</h4>
+                <h4>{{city_weather.country}}</h4>
+            </div>
+            <div class="media-right">
+                <h3><a href="{% url 'DCity' city_weather.city %}" style="text-decoration: none;" class="alert-danger">&#x2718;</a></h3>
+            </div>
+        </div>
+        {% endfor %}
     </div> 
 </div>
 {% endblock %}

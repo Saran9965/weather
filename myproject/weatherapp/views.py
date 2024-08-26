@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from .forms import cityForm
 from.models import city
 from django.contrib import messages
@@ -23,4 +23,22 @@ def home(request):
                      messages.error(request,'City Already Exists...!!!')
 
     form=cityForm()
-    return render(request,'weather.html',{'form':form})
+    cities=city.objects.all()
+    data=[]
+    for cit in cities:
+         res=requests.get(url.format(cit)).json()
+         city_weather={
+              'city':cit,
+              'temperature':res['main']['temp'],
+              'description':res['weather'][0]['description'],
+              'country':res['sys']['country'],
+              'icon':res['weather'][0]['icon'],
+          }
+         data.append(city_weather)
+         context={'data':data,'form':form}
+    return render(request,'weather.html',context)
+
+def delete_city(req,CName):
+     city.objects.get(Name=CName).delete()
+     messages.success(req,''+CName+' Removed Successfully...!!!')
+     return redirect('Home')
